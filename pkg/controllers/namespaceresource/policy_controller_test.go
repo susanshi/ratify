@@ -19,12 +19,12 @@ import (
 	"context"
 	"testing"
 
-	configv1beta1 "github.com/deislabs/ratify/api/v1beta1"
-	"github.com/deislabs/ratify/pkg/controllers"
-	"github.com/deislabs/ratify/pkg/customresources/policies"
-	_ "github.com/deislabs/ratify/pkg/policyprovider/configpolicy"
-	_ "github.com/deislabs/ratify/pkg/policyprovider/regopolicy"
-	test "github.com/deislabs/ratify/pkg/utils"
+	configv1beta1 "github.com/ratify-project/ratify/api/v1beta1"
+	"github.com/ratify-project/ratify/pkg/controllers"
+	"github.com/ratify-project/ratify/pkg/customresources/policies"
+	_ "github.com/ratify-project/ratify/pkg/policyprovider/configpolicy"
+	_ "github.com/ratify-project/ratify/pkg/policyprovider/regopolicy"
+	test "github.com/ratify-project/ratify/pkg/utils"
 	"github.com/sirupsen/logrus"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -137,7 +137,7 @@ func TestWritePolicyStatus(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
+		t.Run(tc.name, func(_ *testing.T) {
 			writePolicyStatus(context.Background(), tc.reconciler, tc.policy, logger, tc.isSuccess, tc.errString)
 		})
 	}

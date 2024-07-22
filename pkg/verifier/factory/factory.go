@@ -21,13 +21,13 @@ import (
 	"path"
 	"strings"
 
-	re "github.com/deislabs/ratify/errors"
-	pluginCommon "github.com/deislabs/ratify/pkg/common/plugin"
-	"github.com/deislabs/ratify/pkg/featureflag"
-	"github.com/deislabs/ratify/pkg/verifier"
-	"github.com/deislabs/ratify/pkg/verifier/config"
-	"github.com/deislabs/ratify/pkg/verifier/plugin"
-	"github.com/deislabs/ratify/pkg/verifier/types"
+	re "github.com/ratify-project/ratify/errors"
+	pluginCommon "github.com/ratify-project/ratify/pkg/common/plugin"
+	"github.com/ratify-project/ratify/pkg/featureflag"
+	"github.com/ratify-project/ratify/pkg/verifier"
+	"github.com/ratify-project/ratify/pkg/verifier/config"
+	"github.com/ratify-project/ratify/pkg/verifier/plugin"
+	"github.com/ratify-project/ratify/pkg/verifier/types"
 	"github.com/sirupsen/logrus"
 )
 
@@ -97,7 +97,11 @@ func CreateVerifierFromConfig(verifierConfig config.VerifierConfig, configVersio
 		return nil, re.ErrorCodePluginNotFound.NewError(re.Verifier, "", re.EmptyLink, err, "plugin not found", re.HideStackTrace)
 	}
 
-	return plugin.NewVerifier(configVersion, verifierConfig, pluginBinDir)
+	pluginVersion := configVersion
+	if value, ok := verifierConfig[types.Version]; ok {
+		pluginVersion = value.(string)
+	}
+	return plugin.NewVerifier(pluginVersion, verifierConfig, pluginBinDir)
 }
 
 // TODO pointer to avoid copy

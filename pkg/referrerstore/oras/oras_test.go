@@ -29,13 +29,13 @@ import (
 	"testing"
 	"time"
 
-	"github.com/deislabs/ratify/pkg/cache"
-	"github.com/deislabs/ratify/pkg/common"
-	"github.com/deislabs/ratify/pkg/ocispecs"
-	"github.com/deislabs/ratify/pkg/referrerstore/config"
-	"github.com/deislabs/ratify/pkg/referrerstore/oras/mocks"
 	"github.com/opencontainers/go-digest"
 	oci "github.com/opencontainers/image-spec/specs-go/v1"
+	"github.com/ratify-project/ratify/pkg/cache"
+	"github.com/ratify-project/ratify/pkg/common"
+	"github.com/ratify-project/ratify/pkg/ocispecs"
+	"github.com/ratify-project/ratify/pkg/referrerstore/config"
+	"github.com/ratify-project/ratify/pkg/referrerstore/oras/mocks"
 	"oras.land/oras-go/v2/registry"
 	"oras.land/oras-go/v2/registry/remote/errcode"
 )
@@ -101,7 +101,7 @@ func TestORASListReferrers_SubjectDesc(t *testing.T) {
 			},
 		},
 	}
-	store.createRepository = func(ctx context.Context, store *orasStore, targetRef common.Reference) (registry.Repository, error) {
+	store.createRepository = func(_ context.Context, _ *orasStore, _ common.Reference) (registry.Repository, error) {
 		return testRepo, nil
 	}
 	inputRef := common.Reference{
@@ -158,7 +158,7 @@ func TestORASListReferrers_NoSubjectDesc(t *testing.T) {
 			},
 		},
 	}
-	store.createRepository = func(ctx context.Context, store *orasStore, targetRef common.Reference) (registry.Repository, error) {
+	store.createRepository = func(_ context.Context, _ *orasStore, _ common.Reference) (registry.Repository, error) {
 		return testRepo, nil
 	}
 	inputRef := common.Reference{
@@ -226,7 +226,7 @@ func TestORASGetReferenceManifest_CachedDesc(t *testing.T) {
 			artifactDigest: io.NopCloser(bytes.NewReader(manifestNotCachedBytes)),
 		},
 	}
-	store.createRepository = func(ctx context.Context, store *orasStore, targetRef common.Reference) (registry.Repository, error) {
+	store.createRepository = func(_ context.Context, _ *orasStore, _ common.Reference) (registry.Repository, error) {
 		return testRepo, nil
 	}
 	store.localCache = mocks.TestStorage{
@@ -290,7 +290,7 @@ func TestORASGetReferenceManifest_NotCachedDesc(t *testing.T) {
 			artifactDigest: io.NopCloser(bytes.NewReader(manifestNotCachedBytes)),
 		},
 	}
-	store.createRepository = func(ctx context.Context, store *orasStore, targetRef common.Reference) (registry.Repository, error) {
+	store.createRepository = func(_ context.Context, _ *orasStore, _ common.Reference) (registry.Repository, error) {
 		return testRepo, nil
 	}
 	store.localCache = mocks.TestStorage{
@@ -346,7 +346,7 @@ func TestORASGetBlobContent_CachedDesc(t *testing.T) {
 			},
 		},
 	}
-	store.createRepository = func(ctx context.Context, store *orasStore, targetRef common.Reference) (registry.Repository, error) {
+	store.createRepository = func(_ context.Context, _ *orasStore, _ common.Reference) (registry.Repository, error) {
 		return testRepo, nil
 	}
 	store.localCache = mocks.TestStorage{
@@ -393,7 +393,7 @@ func TestORASGetBlobContent_NotCachedDesc(t *testing.T) {
 			},
 		},
 	}
-	store.createRepository = func(ctx context.Context, store *orasStore, targetRef common.Reference) (registry.Repository, error) {
+	store.createRepository = func(_ context.Context, _ *orasStore, _ common.Reference) (registry.Repository, error) {
 		return testRepo, nil
 	}
 	store.localCache = mocks.TestStorage{

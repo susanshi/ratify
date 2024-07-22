@@ -26,8 +26,8 @@ import (
 
 	kv "github.com/Azure/azure-sdk-for-go/services/keyvault/v7.1/keyvault"
 	"github.com/Azure/go-autorest/autorest/azure"
-	"github.com/deislabs/ratify/pkg/keymanagementprovider/azurekeyvault/types"
-	"github.com/deislabs/ratify/pkg/keymanagementprovider/config"
+	"github.com/ratify-project/ratify/pkg/keymanagementprovider/azurekeyvault/types"
+	"github.com/ratify-project/ratify/pkg/keymanagementprovider/config"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -173,7 +173,7 @@ func TestCreate(t *testing.T) {
 	}
 	for _, tc := range testCases {
 		t.Run(tc.name, func(t *testing.T) {
-			initKVClient = func(ctx context.Context, keyVaultEndpoint, tenantID, clientID string) (*kv.BaseClient, error) {
+			initKVClient = func(_ context.Context, _, _, _ string) (*kv.BaseClient, error) {
 				return &kv.BaseClient{}, nil
 			}
 			_, err := factory.Create("v1", tc.config, "")
@@ -224,7 +224,7 @@ func TestGetKeys(t *testing.T) {
 		},
 	}
 
-	initKVClient = func(ctx context.Context, keyVaultEndpoint, tenantID, clientID string) (*kv.BaseClient, error) {
+	initKVClient = func(_ context.Context, _, _, _ string) (*kv.BaseClient, error) {
 		return &kv.BaseClient{}, nil
 	}
 	provider, err := factory.Create("v1", config, "")

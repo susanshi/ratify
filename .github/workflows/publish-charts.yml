@@ -12,6 +12,11 @@ jobs:
     permissions:
       contents: write
     steps:
+      - name: Harden Runner
+        uses: step-security/harden-runner@0d381219ddf674d61a7572ddd19d7941e271515c # v2.9.0
+        with:
+          egress-policy: audit
+
       - uses: actions/checkout@692973e3d937129bcbf40652eb9f2f61becf3332
       - name: Publish Helm charts
         uses: stefanprodan/helm-gh-pages@0ad2bb377311d61ac04ad9eb6f252fb68e207260 # v1.7.0

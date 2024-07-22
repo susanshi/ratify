@@ -27,9 +27,9 @@ import (
 	"github.com/aws/aws-sdk-go-v2/credentials/stscreds"
 	"github.com/aws/aws-sdk-go-v2/service/ecr"
 	"github.com/aws/aws-sdk-go-v2/service/ecr/types"
-	provider "github.com/deislabs/ratify/pkg/common/oras/authprovider"
-	"github.com/deislabs/ratify/pkg/utils/awsauth"
 	"github.com/pkg/errors"
+	provider "github.com/ratify-project/ratify/pkg/common/oras/authprovider"
+	"github.com/ratify-project/ratify/pkg/utils/awsauth"
 	"github.com/sirupsen/logrus"
 )
 
@@ -70,7 +70,7 @@ func (d *awsEcrBasicAuthProvider) getEcrAuthToken(artifact string) (EcrAuthToken
 	ctx := context.Background()
 	// TODO: Update to use regional endpoint
 	// nolint:staticcheck
-	resolver := aws.EndpointResolverWithOptionsFunc(func(service, region string, options ...interface{}) (aws.Endpoint, error) {
+	resolver := aws.EndpointResolverWithOptionsFunc(func(service, region string, _ ...interface{}) (aws.Endpoint, error) {
 		if service == ecr.ServiceID && region == apiOverrideRegion {
 			logrus.Info("AWS ECR basic auth using custom endpoint resolver...")
 			logrus.Infof("AWS ECR basic auth API override endpoint: %s", apiOverrideEndpoint)

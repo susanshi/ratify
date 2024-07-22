@@ -21,12 +21,12 @@ import (
 	"strings"
 	"testing"
 
-	configv1beta1 "github.com/deislabs/ratify/api/v1beta1"
-	"github.com/deislabs/ratify/internal/constants"
-	"github.com/deislabs/ratify/pkg/controllers"
-	rs "github.com/deislabs/ratify/pkg/customresources/referrerstores"
-	"github.com/deislabs/ratify/pkg/utils"
-	test "github.com/deislabs/ratify/pkg/utils"
+	configv1beta1 "github.com/ratify-project/ratify/api/v1beta1"
+	"github.com/ratify-project/ratify/internal/constants"
+	"github.com/ratify-project/ratify/pkg/controllers"
+	rs "github.com/ratify-project/ratify/pkg/customresources/referrerstores"
+	"github.com/ratify-project/ratify/pkg/utils"
+	test "github.com/ratify-project/ratify/pkg/utils"
 	"github.com/sirupsen/logrus"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/runtime"
@@ -119,7 +119,7 @@ func TestWriteStoreStatus(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		t.Run(tc.name, func(t *testing.T) {
+		t.Run(tc.name, func(_ *testing.T) {
 			writeStoreStatus(context.Background(), tc.reconciler, tc.store, logger, tc.isSuccess, tc.errString)
 		})
 	}

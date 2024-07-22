@@ -15,7 +15,7 @@ BINARY_NAME		= ratify
 INSTALL_DIR		= ~/.ratify
 CERT_DIR        = ${GITHUB_WORKSPACE}/tls/certs
 
-GO_PKG			= github.com/deislabs/ratify
+GO_PKG			= github.com/ratify-project/ratify
 GIT_COMMIT_HASH = $(shell git rev-parse HEAD)
 GIT_TREE_STATE 	= $(shell test -n "`git status --porcelain`" && echo "modified" || echo "unmodified")
 GIT_TAG     	= $(shell git describe --tags --abbrev=0 --exact-match 2>/dev/null)
@@ -75,17 +75,17 @@ build: build-cli build-plugins
 .PHONY: build-cli
 build-cli: fmt vet
 	go build --ldflags="$(LDFLAGS)" -cover \
-	-coverpkg=github.com/deislabs/ratify/pkg/...,github.com/deislabs/ratify/config/...,github.com/deislabs/ratify/cmd/... \
+	-coverpkg=github.com/ratify-project/ratify/pkg/...,github.com/ratify-project/ratify/config/...,github.com/ratify-project/ratify/cmd/... \
 	-o ./bin/${BINARY_NAME} ./cmd/${BINARY_NAME}
 
 .PHONY: build-plugins
 build-plugins:
-	go build -cover -coverpkg=github.com/deislabs/ratify/plugins/verifier/licensechecker/... -o ./bin/plugins/ ./plugins/verifier/licensechecker
-	go build -cover -coverpkg=github.com/deislabs/ratify/plugins/verifier/sample/... -o ./bin/plugins/ ./plugins/verifier/sample
-	go build -cover -coverpkg=github.com/deislabs/ratify/plugins/referrerstore/sample/... -o ./bin/plugins/referrerstore/ ./plugins/referrerstore/sample
-	go build -cover -coverpkg=github.com/deislabs/ratify/plugins/verifier/sbom/... -o ./bin/plugins/ ./plugins/verifier/sbom
-	go build -cover -coverpkg=github.com/deislabs/ratify/plugins/verifier/schemavalidator/... -o ./bin/plugins/ ./plugins/verifier/schemavalidator
-	go build -cover -coverpkg=github.com/deislabs/ratify/plugins/verifier/vulnerabilityreport/... -o ./bin/plugins/ ./plugins/verifier/vulnerabilityreport
+	go build -cover -coverpkg=github.com/ratify-project/ratify/plugins/verifier/licensechecker/... -o ./bin/plugins/ ./plugins/verifier/licensechecker
+	go build -cover -coverpkg=github.com/ratify-project/ratify/plugins/verifier/sample/... -o ./bin/plugins/ ./plugins/verifier/sample
+	go build -cover -coverpkg=github.com/ratify-project/ratify/plugins/referrerstore/sample/... -o ./bin/plugins/referrerstore/ ./plugins/referrerstore/sample
+	go build -cover -coverpkg=github.com/ratify-project/ratify/plugins/verifier/sbom/... -o ./bin/plugins/ ./plugins/verifier/sbom
+	go build -cover -coverpkg=github.com/ratify-project/ratify/plugins/verifier/schemavalidator/... -o ./bin/plugins/ ./plugins/verifier/schemavalidator
+	go build -cover -coverpkg=github.com/ratify-project/ratify/plugins/verifier/vulnerabilityreport/... -o ./bin/plugins/ ./plugins/verifier/vulnerabilityreport
 
 .PHONY: install
 install:
@@ -572,7 +572,7 @@ load-local-ratify-image:
 	kind load docker-image --name kind localbuild:test
 
 e2e-helmfile-deploy-released-ratify:
-	./.staging/helmfilebin/helmfile sync -f git::https://github.com/deislabs/ratify.git@helmfile.yaml
+	./.staging/helmfilebin/helmfile sync -f git::https://github.com/ratify-project/ratify.git@helmfile.yaml
 
 e2e-helm-deploy-ratify:
 	printf "{\n\t\"auths\": {\n\t\t\"registry:5000\": {\n\t\t\t\"auth\": \"`echo "${TEST_REGISTRY_USERNAME}:${TEST_REGISTRY_PASSWORD}" | tr -d '\n' | base64 -i -w 0`\"\n\t\t}\n\t}\n}" > mount_config.json
@@ -609,7 +609,7 @@ e2e-helm-deploy-ratify-without-tls-certs:
 	--set image.tag=test \
 	--set gatekeeper.version=${GATEKEEPER_VERSION} \
 	--set featureFlags.RATIFY_CERT_ROTATION=${CERT_ROTATION_ENABLED} \
-	--set notaryCert="$$(cat ~/.config/notation/localkeys/ratify-bats-test.crt)" \
+	--set notationCerts[0]="$$(cat ~/.config/notation/localkeys/ratify-bats-test.crt)" \
 	--set cosign.key="$$(cat .staging/cosign/cosign.pub)" \
 	--set cosignKeys[0]="$$(cat .staging/cosign/cosign.pub)" \
 	--set cosign.tLogVerify=false \
@@ -680,9 +680,10 @@ manifests: controller-gen ## Generate WebhookConfiguration, ClusterRole and Cust
 generate: controller-gen conversion-gen ## Generate code containing DeepCopy, DeepCopyInto, and DeepCopyObject method implementations. Also generate conversions between structs of different API versions.
 	$(CONTROLLER_GEN) object:headerFile="hack/boilerplate.go.txt" paths="./..."
 	$(CONVERSION_GEN) \
-        --input-dirs "./api/v1beta1,./api/v1alpha1" \
         --go-header-file "./hack/boilerplate.go.txt" \
-        --output-file-base "zz_generated.conversion"
+        --output-file "zz_generated.conversion.go" \
+		./api/v1beta1 ./api/v1alpha1
+
 
 .PHONY: fmt
 fmt: ## Run go fmt against code.
@@ -730,8 +731,8 @@ CONVERSION_GEN ?= $(LOCALBIN)/conversion-gen
 
 ## Tool Versions
 KUSTOMIZE_VERSION ?= v3.8.7
-CONTROLLER_TOOLS_VERSION ?= v0.9.2
-CONVERSION_TOOLS_VERSION ?= v0.26.1
+CONTROLLER_TOOLS_VERSION ?= v0.15.0
+CONVERSION_TOOLS_VERSION ?= v0.30.2
 
 KUSTOMIZE_INSTALL_SCRIPT ?= "https://raw.githubusercontent.com/kubernetes-sigs/kustomize/master/hack/install_kustomize.sh"
 .PHONY: kustomize
