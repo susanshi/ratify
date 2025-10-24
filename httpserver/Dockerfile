@@ -11,7 +11,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM --platform=$BUILDPLATFORM golang:1.23@sha256:a5339982f2e78b38b26ebbee35139854e184a4e90e1516f9f636371e720b727b as builder
+FROM --platform=$BUILDPLATFORM golang:1.23@sha256:60deed95d3888cc5e4d9ff8a10c54e5edc008c6ae3fba6187be6fb592e19e8c0 as builder
 
 ARG TARGETPLATFORM
 ARG TARGETOS
